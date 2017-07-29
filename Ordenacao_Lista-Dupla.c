@@ -43,6 +43,11 @@ void Menu_Secundario ( tp_nodo *lista, tp_lista *cabeca );
 tp_nodo *Insertion_Sort ( tp_lista *cabeca );
 tp_nodo *Selection_Sort ( tp_lista *cabeca );
 
+//Função teste Merge Sort
+tp_nodo *merge(tp_nodo *first, tp_nodo *second);
+tp_nodo *dividi(tp_nodo *lista);
+tp_nodo *mergeSort(tp_nodo *lista);
+
 
 //Função Principal
 int main () {
@@ -135,9 +140,13 @@ void Menu_Secundario ( tp_nodo *lista, tp_lista *cabeca ) {
     break;
 
     case 3:
+      // Não implementado
+      printf("\nFunção não implementada\n\n");
     break;
 
     case 4:
+      lista = mergeSort ( lista );
+      Reaponterar( lista, cabeca );
     break;
 
     case 5:
@@ -674,4 +683,107 @@ tp_nodo *Insertion_Sort ( tp_lista *cabeca ) {
   }
 
 return cabeca->first;
+}
+
+
+
+//Função para Reaponterar a Cabeça de Lista
+void Reaponterar( tp_nodo *lista, tp_lista *cabeca ) {
+
+  tp_nodo *aux, *ant = NULL;
+  cabeca->first = lista;
+
+  for(aux = cabeca->first; aux != NULL; aux = aux->next ){
+
+    ant = aux;
+
+  }
+
+  cabeca->last = ant;
+
+}
+
+
+
+/**
+  Função de Merge Sort foi baseada em um código de terceiro
+*/
+
+//Função para mesclar duas listas
+tp_nodo *merge( tp_nodo *first, tp_nodo *second ) {
+
+  //Se a primeira lista estiver vazia
+  if (!first){
+
+    return second;
+  }
+
+
+  //Se a segunda lista estiver vazia
+  if (!second){
+
+    return first;
+  }
+
+  //Escolha o menor valor
+  if (first->produto.cod < second->produto.cod) {
+
+    first->next = merge(first->next,second);
+    first->next->prev = first;
+    first->prev = NULL;
+
+    return first;
+
+  } else {
+
+    second->next = merge(first,second->next);
+    second->next->prev = second;
+    second->prev = NULL;
+
+    return second;
+
+  }
+
+}
+
+//Divida uma lista duplamente encadeada em 2
+tp_nodo *dividi( tp_nodo *lista ) {
+
+  tp_nodo *fast = lista,*slow = lista;
+
+  while (fast->next && fast->next->next) {
+
+    fast = fast->next->next;
+    slow = slow->next;
+
+  }
+
+  tp_nodo *temp = slow->next;
+
+  slow->next = NULL;
+
+  return temp;
+}
+
+//Função para fazer classificação de mesclagem
+tp_nodo *mergeSort( tp_nodo *lista ) {
+
+  if(lista == NULL){
+
+    return lista;
+  }
+
+  if (!lista || !lista->next) {
+
+    return lista;
+  }
+
+  tp_nodo *second = dividi(lista);
+
+  //Recorrer para metades esquerda e direita
+  lista = mergeSort(lista);
+  second = mergeSort(second);
+
+  //Junte as duas metades classificadas
+  return merge(lista,second);
 }
